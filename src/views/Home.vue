@@ -1,6 +1,9 @@
 <template lang="pug">
   v-container.home
-    v-card(width="50%" min-height="50%")
+    v-card(
+      :width="$vuetify.breakpoint.mdAndUp ? '50%' : '100%'"
+      :min-height="$vuetify.breakpoint.mdAndUp ? '50%' : '100%'"
+    )
       v-toolbar(flat)
         v-progress-linear(
           :active="isLabeling"
