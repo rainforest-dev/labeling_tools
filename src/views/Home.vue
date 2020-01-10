@@ -2,6 +2,13 @@
   v-container.home
     v-card(width="50%" min-height="50%")
       v-toolbar(flat)
+        v-progress-linear(
+          :active="isLabeling"
+          :indeterminate="isLabeling"
+          absolute
+          bottom
+          color="cyan lighten-3"
+        )
         v-toolbar-title {{ getToolbarTitle() }}
         v-spacer
         v-toolbar-items
@@ -17,7 +24,12 @@
         )
         v-row
           v-col(v-for="item in classes" :key="item.labelName" cols="4")
-            v-btn(rounded width="100%" @click="label(item.labelName)" :disabled="!base64")
+            v-btn(
+              rounded
+              width="100%"
+              @click="label(item.labelName)"
+              :disabled="!base64 || isLabeling"
+            )
               v-icon.mr-1 {{ item.icon }}
               div {{ item.labelName }}
       v-container(v-else)
@@ -41,6 +53,7 @@ export default {
   data() {
     return {
       isSettingsMode: true,
+      isLabeling: false,
       base64: null,
       files: [],
       currentIndex: 0,
@@ -101,9 +114,14 @@ export default {
       return 'Select working direction first';
     },
     label(value) {
-      this.files[this.currentIndex].label = value;
-      this.currentIndex = (this.currentIndex + 1) % this.files.length;
-      this.loadFile(this.files[this.currentIndex].file);
+      this.isLabeling = true;
+      const timer = setTimeout(() => {
+        this.files[this.currentIndex].label = value;
+        this.currentIndex = (this.currentIndex + 1) % this.files.length;
+        this.loadFile(this.files[this.currentIndex].file);
+        this.isLabeling = false;
+        clearTimeout(timer);
+      }, 500);
     },
     exportLabels() {
       let csvContent = '\uFEFF';
