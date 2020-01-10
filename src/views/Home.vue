@@ -6,15 +6,19 @@
         v-spacer
         v-toolbar-items
           v-btn(icon @click="isSettingsMode = !isSettingsMode")
-            v-icon {{ isSettingsMode ? "mdi-settings" : "mdi-home" }}
+            v-icon {{ !isSettingsMode ? "mdi-settings" : "mdi-home" }}
           v-btn(icon @click="exportLabels")
             v-icon mdi-export-variant
-      v-container(v-if="isSettingsMode")
-        v-img(:src="base64" min-width="100%" min-height="100%")
+      v-container(v-if="!isSettingsMode")
+        v-img.mb-3(
+          :src="base64 || require('@/assets/default.jpg')"
+          min-width="100%"
+          min-height="100%"
+        )
         v-row
           v-col(v-for="item in classes" :key="item.labelName" cols="4")
-            v-btn(tile width="100%" @click="label(item.labelName)")
-              v-icon {{ item.icon }}
+            v-btn(rounded width="100%" @click="label(item.labelName)" :disabled="!base64")
+              v-icon.mr-1 {{ item.icon }}
               div {{ item.labelName }}
       v-container(v-else)
         v-file-input(label="Dataset" webkitdirectory multiple @change="choosePath")
@@ -36,8 +40,8 @@ export default {
   name: 'home',
   data() {
     return {
-      isSettingsMode: false,
-      base64: '',
+      isSettingsMode: true,
+      base64: null,
       files: [],
       currentIndex: 0,
       classes: [
@@ -133,7 +137,6 @@ export default {
       };
     },
     addClass(value) {
-      console.log(value);
       this.classes = [...this.classes, value];
     },
     removeClass(index) {

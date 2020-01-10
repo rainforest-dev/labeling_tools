@@ -14,7 +14,7 @@
           close
           @click:close="removeClass(item)"
         )
-          v-icon {{ item.icon }}
+          v-icon.mr-1 {{ item.icon }}
           div {{ item.labelName }}
     v-dialog(v-model="isModalVisible" max-width="50%")
       v-card.pa-5
